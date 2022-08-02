@@ -1,5 +1,5 @@
 import Carousel from "react-spring-3d-carousel";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { config } from "react-spring";
 
 export default function Carroussel(props) {
@@ -10,9 +10,14 @@ export default function Carroussel(props) {
   const [offsetRadius, setOffsetRadius] = useState(2);
   const [showArrows, setShowArrows] = useState(false);
   const [goToSlide, setGoToSlide] = useState(null);
-  const [cards] = useState(table);
+  const [cards, setCards] = useState(table);
 
   useEffect(() => {
+    if (cards.length < 3) {
+      const c = [...cards, 
+        <div className="card-container"></div>
+      ]; setCards(c);
+    }
     setOffsetRadius(props.offset);
     setShowArrows(props.showArrows);
   }, [props.offset, props.showArrows]);
