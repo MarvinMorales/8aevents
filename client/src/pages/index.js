@@ -1,7 +1,6 @@
 import React from "react";
 import "../landingPage.css";
-import { useNavigate, useParams } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { useNavigate } from "react-router-dom";
 import card from "../media/ACT/card.json";
 import { configuration } from "../config"
 import Lottie from "lottie-react";
@@ -59,7 +58,7 @@ export const Index = () => {
 
             <section className="modal-contact" style={{display:showProj ? 'flex' : 'none'}}>
                 <h3 className="closemodal" style={{'&:hover':'cursor-pointer'}} onClick={() => setShowProj(!showProj)}>Close</h3>
-                <div className="card-modal-contact">
+                <div className="card-modal-contact" style={{overflowY: 'scroll'}}>
                     { showProjects() }
                 </div>
             </section>
@@ -68,7 +67,7 @@ export const Index = () => {
                 <header className="header_m" style={{width:'100vw', height:`${scTop > 200 ? 100 : 200}px`, 
                 backgroundColor:`${scTop > 200 ? 'rgba(0,0,0,1)' : 'transparent'}`, transition:'.4s',
                 borderBottom:`1px solid ${scTop > 200 ? 'rgba(255,255,255,0.1)' : 'transparent'}`}}>
-                    <img id="logo1" src={require("../media/LOGO-8A.png")}/>
+                    <img id="logo1" src={require("../media/LOGO-8A.png")} alt="Im"/>
                     <uL>
                         <li onClick={() => {navigate('/'); setToggle(false)}}>Home</li>
                         <li onClick={ () => {setShowProj(!showProj); setToggle(false)}}>Projects</li>
@@ -79,7 +78,7 @@ export const Index = () => {
                             <li onClick={ () => {setShowProj(!showProj); setToggle(false)}}>Projects</li>
                             <li onClick={() => {setModal(!modal); setToggle(false)}}>Contact</li>
                         </uL>
-                    <img className="menuIcon" onClick={() => setToggle(!toggle)} src="https://www.pinclipart.com/picdir/big/532-5328945_menu-bar-icon-white-clipart-png-download-menu.png" style={{width:40}}/>
+                    <img alt="" className="menuIcon" onClick={() => setToggle(!toggle)} src="https://www.pinclipart.com/picdir/big/532-5328945_menu-bar-icon-white-clipart-png-download-menu.png" style={{width:40}}/>
                 </header>
                 <article className="art1">
                     <div className="title1">
@@ -91,8 +90,8 @@ export const Index = () => {
                             share with your loved ones in real time.</h4>
                         <button onClick={ () => {setShowProj(!showProj); setToggle(false)}} className="button"><h4>Check our projects!</h4></button>
                     </div>
-                    <img className="cam" style={{filter:`blur(${scTop*.009}px)`, transform:`translateY(${scTop*.5}px)`}} src={require("../media/cam.png")}/>
-                    <img className="Chevron" style={{position:'absolute', bottom:30, zIndex:100, width:wid > 600 ? 40 : 20, left:'50%', transform:'translateX(-50%)'}} src="https://i0.wp.com/www.advizze.co/wp-content/uploads/2019/08/chevron-down-white.png?fit=219%2C154"/>
+                    <img alt="" className="cam" style={{filter:`blur(${scTop*.009}px)`, transform:`translateY(${scTop*.5}px)`}} src={require("../media/cam.png")}/>
+                    <img alt="" className="Chevron" style={{position:'absolute', bottom:30, zIndex:100, width:wid > 600 ? 40 : 20, left:'50%', transform:'translateX(-50%)'}} src="https://i0.wp.com/www.advizze.co/wp-content/uploads/2019/08/chevron-down-white.png?fit=219%2C154"/>
                 </article>
                 <article className="art2">
                 <div className="about"><h1>Know more about us!</h1></div>
@@ -105,7 +104,7 @@ export const Index = () => {
                                 transform:`scale(${scTop > 500 ? 1 : 0})`, transition:'.3s'}}>
                                 <div className="circle2">
                                     <div className="circlefoto">
-                                        <img style={{width:'100%'}} src={require("../media/marcoPic.png")}/>
+                                        <img alt="" style={{width:'100%'}} src={require("../media/marcoPic.png")}/>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +129,7 @@ export const Index = () => {
                             transform:`scale(${scTop > 500 ? 1 : 0})`, transition:'.3s', transitionDelay:'.1s'}}>
                             <div className="circle2">
                                 <div className="circlefoto">
-                                    <img style={{width:'100%'}} src={require("../media/gabrielPic.png")}/>
+                                    <img alt="" style={{width:'100%'}} src={require("../media/gabrielPic.png")}/>
                                 </div>
                             </div>
                         </div>

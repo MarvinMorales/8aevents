@@ -9,7 +9,7 @@ export const Card = (props) => {
             <div className="card-container">
                 <div className="poster-container">
                     <div className="i-div" onClick={() => navigate(`/player/${proj}/${props.video}`)}><i class="far fa-play-circle"></i></div>
-                    <img className="poster" src={props.posterUrl}/>
+                    <img className="poster" src={props.posterUrl} alt="testIMG"/>
                 </div>
                 <div className="footer-container">
                     <p className="title-wedding">{props.videoName}</p>
