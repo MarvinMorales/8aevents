@@ -38,12 +38,20 @@ export const Player = () => {
                     <div className='close-gallery' onClick={() => navigate(`/${project}`)}>
                         <img src='https://flaticons.net/icon.php?slug_category=mobile-application&slug_icon=left-arrow'/>
                     </div>
-                    <ReactHlsPlayer
+                    <iframe 
+                    width="100%" 
+                    height="100%" 
+                    src={video_to_play}
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen />
+                    {/* <ReactHlsPlayer
                     src={`${configuration['host']}/load/video/streaming/hls/${project}/${video_to_play}/index_1080p.m3u8`}
                     autoPlay controls
                     style={{flex:1}} onEnded={() => navigate(`/${project}`)}
                     width={ w }
-                    height={ h }/>
+                    height={ h }/> */}
                 </section>
             </React.Fragment>
         );

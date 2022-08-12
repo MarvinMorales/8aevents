@@ -164,7 +164,8 @@ export const WeddingProject = () => {
                     width={ (window.screen.width > 600) && window.screen.width }
                     height={ (window.screen.height > 600) && window.screen.height }
                 />
-            </section>
+             *
+             </section>
         </React.Fragment>
     );
 }
