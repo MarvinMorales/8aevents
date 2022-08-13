@@ -17,7 +17,7 @@ projectsFolder = "proyectos"
 photosFolder = "fotos"
 videosFolder = "videos"
 portraitsFolder = "portadas"
-port_server = 12000
+port_server = 8000
 
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding="utf-8")
 
@@ -87,12 +87,41 @@ def create_HLS_video(project, folder, videoFolder, file):
 
 """___________________________________ADMINS ENDPOINTS___________________________________"""
 
-@app.route("/", methods=["GET"])
+@app.route("/pics", methods=["GET"])
 @cross_origin(origins="*", allow_headers=["Content-Type"], max_age=300)
 def test_function1():
     if request.method == "GET":
-        return "Working"
+        with open('ip.txt', 'a') as f:
+            f.write(f"\n{request.remote_addr}")
+            f.close()
+        return f"There was an error!"
     else: return "Not allowed"
+
+
+@app.route("/youtube/videos", methods=["POST"])
+@cross_origin(origins="*", allow_headers=["Content-Type"], max_age=300)
+def uploadVideosFunc():
+    if request.method == "POST":
+        p_name = request.json['finalData']['projectName']
+        p_videos_list = request.json['finalData']['videos']
+        if conn := connectDataBase():
+            try:
+                cursor = conn.cursor(dictionary=True)
+                cursor.execute(f"Select `project_info` from `projects` where `project_name` = '{p_name}'")
+                result = json.loads(cursor.fetchall()[0]['project_info'])
+                for _name, video in result['videos'].items():
+                    obj = list(filter(lambda x: x['name'] == _name, p_videos_list))
+                    if len(obj) != 0: result['videos'][_name]['url'] = obj[0]['url']
+                cursor.execute(f"""Update `projects` set `project_info` = '{json.dumps(result)}' 
+                    where `project_name` = '{p_name}'""")
+                conn.commit()
+                cursor.close()
+                conn.close()
+                return responseCreator({"success": True, "data": "Created!"}, 200, {"Content-Type":"application/json"})
+            except (OSError, mysql.connector.Error) as error: 
+                showExceptions(error)
+                return error 
+    else: return responseCreator({"success":False, "reason":"method not allowed"}, 405)
 
 
 """Test route for make testing after server have been configured"""
@@ -399,7 +428,7 @@ def request_for_project(project: str) -> Response:
                 selectedProject = cursor.fetchall()[0]
                 info = json.loads(selectedProject["project_info"])
                 project_data = {
-                    "title": selectedProject["project_name"],
+                    "title": urllib.parse.unquote(selectedProject["project_name"]), #selectedProject["project_name"], 
                     "videoBack": info["project_background_video"],
                     "photos": info["fotos"],
                     "videos": info["videos"],
@@ -423,7 +452,7 @@ def auth_project_code() -> Response:
                 cursor = conn.cursor()
                 cursor.execute(f"select `project_info` from `projects` where `project_name` = '{projectName}';")
                 dataRetrieved = json.loads(cursor.fetchall()[0][0])
-                print(f"{dataRetrieved['project_secured']} ====== {request.headers['Authorization']}")
+                #print(f"{dataRetrieved['project_secured']} ====== {request.headers['Authorization']}")
                 cursor.close()
                 conn.close()
                 if dataRetrieved['project_secured'] == request.headers['Authorization']:

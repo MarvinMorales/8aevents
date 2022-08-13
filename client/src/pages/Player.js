@@ -1,16 +1,16 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import ReactHlsPlayer from 'react-hls-player';
-import screenfull from 'screenfull';
 import { configuration } from "../config";
 
 export const Player = () => {
     const navigate = useNavigate();
+    const location = useLocation(); 
     const { video_to_play, playList } = useParams();
     const project = useParams()['project'].replace(/_/g, " ");
     const [playlist, setPlaylist] = React.useState([]);
     const [url, setUrl] = React.useState("");
-    const [next, setNext] = React.useState(1);
+    //const [next, setNext] = React.useState(1);
     const playerRef = React.useRef();
 
     const w = window.screen.width;
@@ -24,12 +24,12 @@ export const Player = () => {
         } setPlaylist(_playList); setUrl(_playList[0]);
     }, []);
 
-    const fireOnVideoEnd = () => {
-        if (next === playlist.length) navigate(`/${project}`);
-        setUrl(playlist[next]);
-        playerRef.current.load()
-        setNext(next + 1);
-    }
+    // const fireOnVideoEnd = () => {
+    //     if (next === playlist.length) navigate(`/${project}`);
+    //     setUrl(playlist[next]);
+    //     playerRef.current.load()
+    //     setNext(next + 1);
+    // }
 
     if (playlist.length === 0) {
         return (
@@ -38,12 +38,20 @@ export const Player = () => {
                     <div className='close-gallery' onClick={() => navigate(`/${project}`)}>
                         <img src='https://flaticons.net/icon.php?slug_category=mobile-application&slug_icon=left-arrow'/>
                     </div>
-                    <ReactHlsPlayer
+                    <iframe 
+                    width="100%" 
+                    height="100%" 
+                    src={location.state.youtubeURL}
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen />
+                    {/* <ReactHlsPlayer
                     src={`${configuration['host']}/load/video/streaming/hls/${project}/${video_to_play}/index_1080p.m3u8`}
                     autoPlay controls
                     style={{flex:1}} onEnded={() => navigate(`/${project}`)}
                     width={ w }
-                    height={ h }/>
+                    height={ h }/> */}
                 </section>
             </React.Fragment>
         );
