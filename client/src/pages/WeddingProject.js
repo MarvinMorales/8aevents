@@ -55,10 +55,14 @@ export const WeddingProject = () => {
                 if (dataObject[i].portrait !== "") {
                     let obj = {}; obj['project'] = projectName;
                     obj['video'] = i; playList.push(obj);
-                    let object = new Object();
+                    let object = {};
                     object['key'] = uuidv4();
-                    object['content'] = <Card project={projectName} video={i} videoName={i.split(".")[0]} 
-                        posterUrl={`${configuration['host']}/load/poster/${projectName}/${dataObject[i].portrait}`} />
+                    object['content'] = 
+
+                    <Card project={projectName} 
+                    youtube={"url" in dataObject[i] ? dataObject[i].url : null} 
+                    video={i} videoName={i.split(".")[0]} 
+                    posterUrl={`${configuration['host']}/load/poster/${projectName}/${dataObject[i].portrait}`} />
                     _slides.push(object);
                 }
             } setSlides(_slides); setPlayList(playList); 
