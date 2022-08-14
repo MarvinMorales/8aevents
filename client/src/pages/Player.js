@@ -24,13 +24,6 @@ export const Player = () => {
         } setPlaylist(_playList); setUrl(_playList[0]);
     }, []);
 
-    // const fireOnVideoEnd = () => {
-    //     if (next === playlist.length) navigate(`/${project}`);
-    //     setUrl(playlist[next]);
-    //     playerRef.current.load()
-    //     setNext(next + 1);
-    // }
-
     if (playlist.length === 0) {
         return (
             <React.Fragment>
@@ -38,20 +31,23 @@ export const Player = () => {
                     <div className='close-gallery' onClick={() => navigate(`/${project}`)}>
                         <img src='https://flaticons.net/icon.php?slug_category=mobile-application&slug_icon=left-arrow'/>
                     </div>
-                    <iframe 
-                    width="100%" 
-                    height="100%" 
-                    src={location.state.youtubeURL}
-                    title="YouTube video player" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen />
-                    {/* <ReactHlsPlayer
-                    src={`${configuration['host']}/load/video/streaming/hls/${project}/${video_to_play}/index_1080p.m3u8`}
-                    autoPlay controls
-                    style={{flex:1}} onEnded={() => navigate(`/${project}`)}
-                    width={ w }
-                    height={ h }/> */}
+                    {video_to_play.toLocaleLowerCase().includes("back") ? (
+                        <ReactHlsPlayer
+                        src={`${configuration['host']}/load/video/streaming/hls/${project}/${video_to_play}/index_1080p.m3u8`}
+                        autoPlay controls
+                        style={{flex:1}} onEnded={() => navigate(`/${project}`)}
+                        width={ w }
+                        height={ h }/>
+                    ) : (
+                        <iframe 
+                        width="100%" 
+                        height="100%" 
+                        src={location.state.youtubeURL}
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen />
+                    )}
                 </section>
             </React.Fragment>
         );
