@@ -109,9 +109,12 @@ def uploadVideosFunc():
                 cursor = conn.cursor(dictionary=True)
                 cursor.execute(f"Select `project_info` from `projects` where `project_name` = '{p_name}'")
                 result = json.loads(cursor.fetchall()[0]['project_info'])
-                for _name, video in result['videos'].items():
-                    obj = list(filter(lambda x: x['name'] == _name, p_videos_list))
-                    if len(obj) != 0: result['videos'][_name]['url'] = obj[0]['url']
+                new_video = dict()
+                for index, video_item in enumerate(p_videos_list):
+                    new_video["rating"] = [0,0,0,0,0]
+                    new_video["url"] = video_item["url"]
+                    new_video["portrait"] = video_item["portraitName"]
+                    result["videos"][video_item["name"]] = new_video
                 cursor.execute(f"""Update `projects` set `project_info` = '{json.dumps(result)}' 
                     where `project_name` = '{p_name}'""")
                 conn.commit()
@@ -140,8 +143,8 @@ def test_function(texto: str):
 def auth_api_route() -> Response:
     if request.method == "POST":
         data = json.loads(request.data)
-        if conn := connectDataBase():
-            try:
+        try:
+            if conn := connectDataBase():
                 cursor = conn.cursor()
                 hashed_string = hashlib.sha256(data['password'].encode('utf-8')).hexdigest()
                 sql_statement = f"""Select * from `admins` where `email` = 
@@ -155,7 +158,7 @@ def auth_api_route() -> Response:
                     headers = {"Authorization": token, "Access-Control-Expose-Headers": "*", "Content-Type": "application/json"}
                     return responseCreator(payload, 200, headers)
                 elif len(adminFound) != 1: return responseCreator({"success": True, "reason": "no user found!"}, 401)
-            except (OSError, mysql.connector.Error) as error: showExceptions(error)
+        except (OSError, mysql.connector.Error) as error: showExceptions(error)
     else: return responseCreator({"success":False, "reason":"method not allowed"}, 405)
 
 
@@ -239,30 +242,28 @@ def upload_portraits() -> Response:
     if request.method == "POST":
         validation = Validate_token(request.headers['Authorization'])
         if validation['response'] == "Valid":
-            file = request.files['image']
+            file_it = request.files['image']
             if conn := connectDataBase():
                 try:
                     cursor = conn.cursor(dictionary=True)
-                    projectName = json.loads(request.form.get('projectName'))
-                    files_path = os.path.join(os.getcwd(), projectsFolder, projectName['name'], portraitsFolder)
-                    #files_path = os.getcwd() + f"/{projectsFolder}/{projectName['name']}/{portraitsFolder}/"
-                    file_path = os.path.join(os.getcwd(), projectsFolder, projectName['name'])
-                    #file_path = os.getcwd() + f"/{projectsFolder}/{projectName['name']}"
-                    file.save(files_path + f"{request.files['image'].filename}")
-                    cursor.execute("Select `project_info` from `projects` where `project_name` = '{}';".format(projectName['name']))
+                    project_name = json.loads(request.form.get('projectName'))
+                    files_path = os.path.join(os.getcwd(), projectsFolder, project_name['name'], portraitsFolder)
+                    file_path = os.path.join(os.getcwd(), projectsFolder, project_name['name'])
+                    file_it.save(files_path + f"{request.files['image'].filename}")
+                    cursor.execute("Select `project_info` from `projects` where `project_name` = '{}';".format(project_name['name']))
                     result = json.loads(cursor.fetchall()[0]['project_info'])
-                    projectSize = get_project_size(os.getcwd() + f"/{projectsFolder}/{projectName['name']}")
-                    result['videos'][projectName['videoName']]['portrait'] = projectName['portraitName']
-                    result['project_size'] = round(projectSize * 9.537 * pow(10, -7), 2)
+                    project_size = get_project_size(os.getcwd() + f"/{projectsFolder}/{project_name['name']}")
+                    result['videos'][project_name['videoName']]['portrait'] = project_name['portraitName']
+                    result['project_size'] = round(project_size * 9.537 * pow(10, -7), 2)
                     cursor.execute(f"""Update `projects` set `project_info` = '{json.dumps(result)}' 
-                    where `project_name` = '{projectName['name']}'""")
+                    where `project_name` = '{project_name['name']}'""")
                     conn.commit()
                     cursor.close()
                     conn.close()
-                    shutil.make_archive(projectName['name'], 'zip', file_path)
+                    shutil.make_archive(project_name['name'], 'zip', file_path)
                 except (OSError, mysql.connector.Error) as error: showExceptions(error)
                 headers = {"Content-Type":"application/json"}
-                return responseCreator({"success": True, "fileUpload": file.filename}, 200, headers)
+                return responseCreator({"success": True, "fileUpload": file_it.filename}, 200, headers)
         else: return responseCreator({"success":False, "reason":"no valid token!"}, 401)   
     else: return responseCreator({"success":False, "reason":"method not allowed"}, 405)
 
